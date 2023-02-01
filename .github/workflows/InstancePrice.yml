@@ -30,7 +30,7 @@ jobs:
           git config --global user.name  ${{ secrets.NAME }}
           git config pull.rebase false  # merge (the default strategy)
           # GITHUB_REPOSITORY already taken => GIT_REPOSITORY
-          python3 aws/instance_types.py
+          python3 aws/instances_types.py
           git add instance_pricing.json 
           git commit -m 'Updated the instance pricing'
           git pull https://${{ secrets.TOKEN }}@${{ secrets.GIT_REPOSITORY}} main

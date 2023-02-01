@@ -1,0 +1,36 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: InstancePricing
+
+on:
+  schedule:
+    - cron: '0 0 * * 1' # run it on Monday
+  workflow_dispatch:
+
+jobs:
+
+  bump_version:
+    name: update instance pricing
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python3.8
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
+      - name: 🎁 Bump Version
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_ACCESS_KEY }}
+        run: |
+          git checkout main
+          git config --global user.email ${{ secrets.EMAIL }}
+          git config --global user.name  ${{ secrets.NAME }}
+          git config pull.rebase false  # merge (the default strategy)
+          # GITHUB_REPOSITORY already taken => GIT_REPOSITORY
+          python3 aws/instance_types.py
+          git add instance_pricing.json 
+          git commit -m 'Updated the instance pricing'
+          git pull https://${{ secrets.TOKEN }}@${{ secrets.GIT_REPOSITORY}} main
+          git push https://${{ secrets.TOKEN }}@${{ secrets.GIT_REPOSITORY}} main

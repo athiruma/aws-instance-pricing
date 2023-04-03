@@ -4,8 +4,8 @@
 name: InstancePricing
 
 on:
-  schedule:
-    - cron: '0 0 * * 1' # run it on Monday
+ # schedule:
+   # - cron: '0 0 * * 1' # run it on Monday
   workflow_dispatch:
 
 jobs:
